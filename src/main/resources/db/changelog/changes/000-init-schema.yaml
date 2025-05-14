@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - changeSet:
+      id: 000-create-table-orders
+      author: ragnar-alan
+      changes:
+        - createSequence:
+            incrementBy: 1
+            sequenceName: hibernate_sequence
+            startValue: 10000
+  - changeSet:
+      id: 000-create-table-orders
+      author: ragnar-alan
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: membership
+      changes:
+        - createTable:
+            tableName: orders
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+              - column:
+                  name: order_number
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: true
+                    unique: true
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: total_price_in_cents
+                  type: DOUBLE
+              - column:
+                  name: currency
+                  type: VARCHAR(255)
+              - column:
+                  name: order_lines
+                  type: JSONB
+              - column:
+                  name: created_at
+                  type: DATE
+              - column:
+                  name: updated_at
+                  type: DATE
+              - column:
+                  name: processed_at
+                  type: DATE
+              - column:
+                  name: canceled_at
+                  type: DATE
+              - column:
+                  name: completed_at
+                  type: DATE
+        - createIndex:
+            columns:
+              - column:
+                  name: order_number
+              - column:
+                  name: created_at
+            indexName: idx_order_number_created_at
+            tableName: orders
