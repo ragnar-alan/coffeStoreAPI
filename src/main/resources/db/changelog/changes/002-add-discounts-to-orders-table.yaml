@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-add-discounts-column
+      author: ragnar-alan
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: discounts
+                  type: JSONB

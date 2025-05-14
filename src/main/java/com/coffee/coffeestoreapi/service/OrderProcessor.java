@@ -1,12 +1,12 @@
 package com.coffee.coffeestoreapi.service;
 
-import com.coffee.store.config.settings.DiscountSettings;
-import com.coffee.store.entity.Order;
-import com.coffee.store.model.Coffee;
-import com.coffee.store.model.Discount;
-import com.coffee.store.model.OrderLine;
-import com.coffee.store.model.OrderRequest;
-import com.coffee.store.model.OrderStatus;
+import com.coffee.coffeestoreapi.config.settings.DiscountSettings;
+import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.model.Coffee;
+import com.coffee.coffeestoreapi.model.Discount;
+import com.coffee.coffeestoreapi.model.OrderLine;
+import com.coffee.coffeestoreapi.model.OrderRequest;
+import com.coffee.coffeestoreapi.model.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -20,14 +20,14 @@ import java.util.List;
 public class OrderProcessor {
     private final DiscountSettings discountSettings;
 
-    public Order processOrder(OrderRequest orderRequest) {
+    public Order processOrder(List<OrderLine> orderRequest) {
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
         order.setStatus(OrderStatus.PENDING);
-        order.setOrderLines(orderRequest.orderLines());
+        order.setOrderLines(orderRequest);
 
         // Calculate subtotal price (sum of all items)
-        double subtotalInCents = calculateSubtotalInCents(orderRequest.orderLines());
+        double subtotalInCents = calculateSubtotalInCents(orderRequest);
         order.setSubTotalPriceInCents(subtotalInCents);
 
         // Apply discounts if enabled
@@ -76,8 +76,8 @@ public class OrderProcessor {
                 .orElse(0.0);
     }
 
-    public List<Discount> calculateDiscounts(OrderRequest orderRequest, double subtotalInCents) {
-        if (CollectionUtils.isEmpty(orderRequest.orderLines())) {
+    public List<Discount> calculateDiscounts(List<OrderLine> orderRequest, double subtotalInCents) {
+        if (CollectionUtils.isEmpty(orderRequest)) {
             return List.of();
         }
 
@@ -120,8 +120,8 @@ public class OrderProcessor {
         return null;
     }
 
-    private void freeItemAfterThreeDiscountCalculation(OrderRequest orderRequest, List<Discount> possibleDiscounts) {
-        List<OrderLine> coffeeLines = orderRequest.orderLines().stream()
+    private void freeItemAfterThreeDiscountCalculation(List<OrderLine> orderRequest, List<Discount> possibleDiscounts) {
+        List<OrderLine> coffeeLines = orderRequest.stream()
                 .filter(line -> line.getItems() != null && line.getItems().stream().anyMatch(item -> item instanceof Coffee))
                 .toList();
 
