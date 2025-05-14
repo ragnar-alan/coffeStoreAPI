@@ -1,8 +1,8 @@
 package com.coffee.coffeestoreapi.entity;
 
-import com.coffee.store.model.Discount;
-import com.coffee.store.model.OrderLine;
-import com.coffee.store.model.OrderStatus;
+import com.coffee.coffeestoreapi.model.Discount;
+import com.coffee.coffeestoreapi.model.OrderLine;
+import com.coffee.coffeestoreapi.model.OrderStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,8 +37,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
     private List<Discount> discounts;
+
     private Double subTotalPriceInCents;
+
     private Double totalPriceInCents;
 
     private String currency;

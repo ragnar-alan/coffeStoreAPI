@@ -1,9 +1,10 @@
 package com.coffee.coffeestoreapi.service;
 
-import com.coffee.store.mapper.OrderMapper;
-import com.coffee.store.model.OrderDto;
-import com.coffee.store.model.OrderRequest;
-import com.coffee.store.repository.OrderRepository;
+import com.coffee.coffeestoreapi.mapper.OrderMapper;
+import com.coffee.coffeestoreapi.model.OrderDto;
+import com.coffee.coffeestoreapi.model.OrderLine;
+import com.coffee.coffeestoreapi.model.OrderRequest;
+import com.coffee.coffeestoreapi.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class OrderService {
     }
 
     @Transactional
-    public ResponseEntity<Void> createOrder(OrderRequest orderRequest) {
+    public ResponseEntity<Void> createOrder(List<OrderLine> orderRequest) {
         var processedOrder = orderProcessor.processOrder(orderRequest);
         var savedOrder = orderRepository.save(processedOrder);
         return ResponseEntity.created(

@@ -1,7 +1,7 @@
 package com.coffee.coffeestoreapi.mapper;
 
-import com.coffee.store.entity.Order;
-import com.coffee.store.model.OrderDto;
+import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.model.OrderDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

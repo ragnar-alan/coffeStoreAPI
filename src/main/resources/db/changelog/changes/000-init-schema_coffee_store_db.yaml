@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 000-create-table-orders
+      id: 000-create-sequence-hibernate
       author: ragnar-alan
       changes:
         - createSequence:
@@ -8,7 +8,7 @@ databaseChangeLog:
             sequenceName: hibernate_sequence
             startValue: 10000
   - changeSet:
-      id: 000-create-table-orders
+      id: 001-create-table-orders
       author: ragnar-alan
       preConditions:
         - onFail: MARK_RAN
