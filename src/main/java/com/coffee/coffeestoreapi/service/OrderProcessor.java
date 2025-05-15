@@ -20,19 +20,19 @@ import java.util.List;
 public class OrderProcessor {
     private final DiscountSettings discountSettings;
 
-    public Order processOrder(List<OrderLine> orderRequest) {
+    public Order processOrder(OrderRequest orderRequest) {
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
         order.setStatus(OrderStatus.PENDING);
-        order.setOrderLines(orderRequest);
+        order.setOrderLines(orderRequest.orderLines());
 
         // Calculate subtotal price (sum of all items)
-        double subtotalInCents = calculateSubtotalInCents(orderRequest);
+        double subtotalInCents = calculateSubtotalInCents(orderRequest.orderLines());
         order.setSubTotalPriceInCents(subtotalInCents);
 
         // Apply discounts if enabled
         if (discountSettings.isEnabled()) {
-            List<Discount> discounts = calculateDiscounts(orderRequest, subtotalInCents);
+            List<Discount> discounts = calculateDiscounts(orderRequest.orderLines(), subtotalInCents);
             order.setDiscounts(discounts);
 
             // Apply discount to get total price
@@ -53,7 +53,7 @@ public class OrderProcessor {
         }
 
         return orderLines.stream()
-                .mapToDouble(OrderLine::getPriceInCents)
+                .mapToDouble(OrderLine::priceInCents)
                 .sum();
     }
 
@@ -76,8 +76,8 @@ public class OrderProcessor {
                 .orElse(0.0);
     }
 
-    public List<Discount> calculateDiscounts(List<OrderLine> orderRequest, double subtotalInCents) {
-        if (CollectionUtils.isEmpty(orderRequest)) {
+    public List<Discount> calculateDiscounts(List<OrderLine> lines, double subtotalInCents) {
+        if (CollectionUtils.isEmpty(lines)) {
             return List.of();
         }
 
@@ -87,7 +87,7 @@ public class OrderProcessor {
         quarterDiscountCalculation(subtotalInCents, possibleDiscounts);
 
         // 2. If there are 3 or more drinks in the cart, the one with the lowest amount should be free.
-        freeItemAfterThreeDiscountCalculation(orderRequest, possibleDiscounts);
+        freeItemAfterThreeDiscountCalculation(lines, possibleDiscounts);
 
         // 3. If eligible for both promotions, use the one with the lowest cart amount (highest discount value)
         List<Discount> possibleDiscounts1 = calculatePossibleDiscountOnOrder(subtotalInCents, possibleDiscounts);
@@ -120,21 +120,21 @@ public class OrderProcessor {
         return null;
     }
 
-    private void freeItemAfterThreeDiscountCalculation(List<OrderLine> orderRequest, List<Discount> possibleDiscounts) {
-        List<OrderLine> coffeeLines = orderRequest.stream()
-                .filter(line -> line.getItems() != null && line.getItems().stream().anyMatch(item -> item instanceof Coffee))
+    private void freeItemAfterThreeDiscountCalculation(List<OrderLine> lines, List<Discount> possibleDiscounts) {
+        List<OrderLine> coffeeLines = lines.stream()
+                .filter(line -> line.coffees() != null && line.coffees().stream().anyMatch(item -> item instanceof Coffee))
                 .toList();
 
         if (discountSettings.isFreeItemAfterThree() && coffeeLines.size() >= 3) {
             // Find the coffee with the lowest price
             OrderLine cheapestCoffeeLine = coffeeLines.stream()
-                    .min(Comparator.comparing(OrderLine::getPriceInCents))
+                    .min(Comparator.comparing(OrderLine::priceInCents))
                     .orElse(null);
 
             if (cheapestCoffeeLine != null) {
                 Discount discount = new Discount();
                 discount.setName("Free drink for 3+ drinks in cart");
-                discount.setAmountInCents(cheapestCoffeeLine.getPriceInCents());
+                discount.setAmountInCents(cheapestCoffeeLine.priceInCents());
                 possibleDiscounts.add(discount);
             }
         }
@@ -145,6 +145,7 @@ public class OrderProcessor {
             Discount discount = new Discount();
             discount.setName("25% off for orders over €12");
             discount.setPercentage(25.0);
+            discount.setAmountInCents(subtotalInCents * 0.25);
             possibleDiscounts.add(discount);
         }
     }

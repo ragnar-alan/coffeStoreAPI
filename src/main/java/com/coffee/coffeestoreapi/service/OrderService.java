@@ -37,7 +37,7 @@ public class OrderService {
     }
 
     @Transactional
-    public ResponseEntity<Void> createOrder(List<OrderLine> orderRequest) {
+    public ResponseEntity<Void> createOrder(OrderRequest orderRequest) {
         var processedOrder = orderProcessor.processOrder(orderRequest);
         var savedOrder = orderRepository.save(processedOrder);
         return ResponseEntity.created(
