@@ -21,3 +21,9 @@ discounts:
   enabled: true
   twenty-five-percent: true
   free-item-after-three: true
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
