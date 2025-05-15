@@ -20,6 +20,13 @@ import java.util.List;
 public class OrderProcessor {
     private final DiscountSettings discountSettings;
 
+    /**
+     * Processes an order request, calculates subtotal, applies discounts if enabled,
+     * and returns a populated {@link Order} entity.
+     *
+     * @param orderRequest the order request containing order lines
+     * @return the processed {@link Order} with calculated prices and discounts
+     */
     public Order processOrder(OrderRequest orderRequest) {
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
@@ -47,7 +54,13 @@ public class OrderProcessor {
         return order;
     }
 
-    public double calculateSubtotalInCents(List<OrderLine> orderLines) {
+    /**
+     * Calculates the subtotal price in cents for the given order lines.
+     *
+     * @param orderLines the list of order lines
+     * @return the subtotal price in cents
+     */
+    protected double calculateSubtotalInCents(List<OrderLine> orderLines) {
         if (CollectionUtils.isEmpty(orderLines)) {
             return 0.0;
         }
@@ -57,7 +70,15 @@ public class OrderProcessor {
                 .sum();
     }
 
-    public double calculateTotalDiscount(List<Discount> discounts, double subtotalInCents) {
+    /**
+     * Calculates the total discount amount in cents for the given discounts and subtotal.
+     * Only the discount with the highest value is applied.
+     *
+     * @param discounts the list of applicable discounts
+     * @param subtotalInCents the subtotal price in cents
+     * @return the total discount amount in cents
+     */
+    protected double calculateTotalDiscount(List<Discount> discounts, double subtotalInCents) {
         if (CollectionUtils.isEmpty(discounts)) {
             return 0.0;
         }
@@ -76,7 +97,15 @@ public class OrderProcessor {
                 .orElse(0.0);
     }
 
-    public List<Discount> calculateDiscounts(List<OrderLine> lines, double subtotalInCents) {
+    /**
+     * Determines the applicable discounts for the given order lines and subtotal.
+     * Returns only the discount(s) that result in the lowest cart amount.
+     *
+     * @param lines the list of order lines
+     * @param subtotalInCents the subtotal price in cents
+     * @return the list of applicable discounts
+     */
+    protected List<Discount> calculateDiscounts(List<OrderLine> lines, double subtotalInCents) {
         if (CollectionUtils.isEmpty(lines)) {
             return List.of();
         }
@@ -94,6 +123,17 @@ public class OrderProcessor {
         if (possibleDiscounts1 != null) return possibleDiscounts1;
 
         return possibleDiscounts;
+    }
+
+    /**
+     * Generates a unique order number in the format RCS-yyyyMMddHHmmssSSS.
+     *
+     * @return the generated order number
+     */
+    protected String generateOrderNumber() {
+        String timestamp = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+        return "RCS-" + timestamp;
     }
 
     private static List<Discount> calculatePossibleDiscountOnOrder(double subtotalInCents, List<Discount> possibleDiscounts) {
@@ -148,11 +188,5 @@ public class OrderProcessor {
             discount.setAmountInCents(subtotalInCents * 0.25);
             possibleDiscounts.add(discount);
         }
-    }
-
-    public String generateOrderNumber() {
-        String timestamp = java.time.LocalDateTime.now()
-                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        return "RCS-" + timestamp;
     }
 }
