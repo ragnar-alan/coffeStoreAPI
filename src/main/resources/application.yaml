@@ -8,7 +8,13 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop # DEV_ONLY
+  liquibase:
+    enabled: true
+
+    drop-first: true # DEV_ONLY
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 
 # Feature flags
 discounts:

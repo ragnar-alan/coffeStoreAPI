@@ -34,7 +34,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createOrder(@Validated @RequestBody OrderRequest lines) {
+    public ResponseEntity<Void> createOrder(@RequestBody OrderRequest lines) {
         //@TODO: Create orderRequest JSON so you can test the functionality
         return orderService.createOrder(lines);
     }

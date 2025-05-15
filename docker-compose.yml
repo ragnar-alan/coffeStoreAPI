@@ -17,6 +17,7 @@ services:
 
   db:
     image: postgres:16.4-alpine
+    restart: always
     container_name: coffee-store-db
     environment:
       POSTGRES_DB: "coffee_store"
@@ -24,3 +25,8 @@ services:
       POSTGRES_PASSWORD: "password"
     ports:
       - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
