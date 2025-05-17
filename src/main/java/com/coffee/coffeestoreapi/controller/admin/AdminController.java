@@ -1,8 +1,7 @@
-package com.coffee.coffeestoreapi.controller;
+package com.coffee.coffeestoreapi.controller.admin;
 
 import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.OrderDto;
-import com.coffee.coffeestoreapi.model.OrderRequest;
 import com.coffee.coffeestoreapi.model.SimpleOrderDto;
 import com.coffee.coffeestoreapi.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
