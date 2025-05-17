@@ -1,0 +1,101 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-insert-initial-products
+      author: ragnar-alan
+      changes:
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Black Coffee
+              - column:
+                  name: price_in_cents
+                  value: 4
+              - column:
+                  name: type
+                  value: DRINK
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Latte
+              - column:
+                  name: price_in_cents
+                  value: 5
+              - column:
+                  name: type
+                  value: DRINK
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Mocha
+              - column:
+                  name: price_in_cents
+                  value: 6
+              - column:
+                  name: type
+                  value: DRINK
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Tea
+              - column:
+                  name: price_in_cents
+                  value: 3
+              - column:
+                  name: type
+                  value: DRINK
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Milk
+              - column:
+                  name: price_in_cents
+                  value: 2
+              - column:
+                  name: type
+                  value: TOPPING
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Hazelnut syrup
+              - column:
+                  name: price_in_cents
+                  value: 3
+              - column:
+                  name: type
+                  value: TOPPING
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Chocolate sauce
+              - column:
+                  name: price_in_cents
+                  value: 5
+              - column:
+                  name: type
+                  value: TOPPING
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: product_name
+                  value: Lemon
+              - column:
+                  name: price_in_cents
+                  value: 2
+              - column:
+                  name: type
+                  value: TOPPING
