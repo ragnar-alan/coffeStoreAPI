@@ -11,10 +11,13 @@ databaseChangeLog:
                   value: Black Coffee
               - column:
                   name: price_in_cents
-                  value: 4
+                  value: 400
               - column:
                   name: type
                   value: DRINK
+              - column:
+                  name: favorite
+                  value: true
         - insert:
             tableName: products
             columns:
@@ -23,10 +26,13 @@ databaseChangeLog:
                   value: Latte
               - column:
                   name: price_in_cents
-                  value: 5
+                  value: 500
               - column:
                   name: type
                   value: DRINK
+              - column:
+                  name: favorite
+                  value: false
         - insert:
             tableName: products
             columns:
@@ -35,10 +41,13 @@ databaseChangeLog:
                   value: Mocha
               - column:
                   name: price_in_cents
-                  value: 6
+                  value: 600
               - column:
                   name: type
                   value: DRINK
+              - column:
+                  name: favorite
+                  value: false
         - insert:
             tableName: products
             columns:
@@ -47,10 +56,13 @@ databaseChangeLog:
                   value: Tea
               - column:
                   name: price_in_cents
-                  value: 3
+                  value: 300
               - column:
                   name: type
                   value: DRINK
+              - column:
+                  name: favorite
+                  value: true
         - insert:
             tableName: products
             columns:
@@ -59,10 +71,13 @@ databaseChangeLog:
                   value: Milk
               - column:
                   name: price_in_cents
-                  value: 2
+                  value: 200
               - column:
                   name: type
                   value: TOPPING
+              - column:
+                  name: favorite
+                  value: true
         - insert:
             tableName: products
             columns:
@@ -71,7 +86,7 @@ databaseChangeLog:
                   value: Hazelnut syrup
               - column:
                   name: price_in_cents
-                  value: 3
+                  value: 300
               - column:
                   name: type
                   value: TOPPING
@@ -83,10 +98,13 @@ databaseChangeLog:
                   value: Chocolate sauce
               - column:
                   name: price_in_cents
-                  value: 5
+                  value: 500
               - column:
                   name: type
                   value: TOPPING
+              - column:
+                  name: favorite
+                  value: true
         - insert:
             tableName: products
             columns:
@@ -99,3 +117,6 @@ databaseChangeLog:
               - column:
                   name: type
                   value: TOPPING
+              - column:
+                  name: favorite
+                  value: false

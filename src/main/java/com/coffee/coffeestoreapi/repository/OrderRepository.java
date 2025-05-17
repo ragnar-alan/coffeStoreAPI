@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByOrderNumber(String orderNumber);
 
-    @Query("SELECT o FROM orders o WHERE o.status = :status ORDER BY o.createdAt ASC")
+    @Query("SELECT o FROM Order o WHERE o.status = :status ORDER BY o.createdAt ASC")
     List<Order> findAllByStatusDescendingCreationOrder(@Param("status") OrderStatus status);
 
 }

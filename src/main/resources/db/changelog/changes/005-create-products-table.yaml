@@ -30,3 +30,8 @@ databaseChangeLog:
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
+              - column:
+                  name: favorite
+                  type: BOOLEAN
+                  constraints:
+                    nullable: true
