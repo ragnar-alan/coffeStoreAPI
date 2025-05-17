@@ -1,13 +1,11 @@
 package com.coffee.coffeestoreapi.service;
 
-import com.coffee.coffeestoreapi.model.Coffee;
-import com.coffee.coffeestoreapi.model.Currency;
+import com.coffee.coffeestoreapi.model.Drink;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
 import org.junit.jupiter.params.provider.Arguments;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,14 +22,14 @@ public class BaseTest {
 
                 // Single order line
                 Arguments.of(List.of(
-                        new OrderLine(500.0, List.of(new Coffee()), List.of())
+                        new OrderLine(500.0, new Drink(), List.of())
                 ), 500.0),
 
                 // Multiple order lines
                 Arguments.of(List.of(
-                        new OrderLine(500.0, List.of(new Coffee()), List.of()),
-                        new OrderLine(300.0, List.of(new Coffee()), List.of()),
-                        new OrderLine(200.0, List.of(new Coffee()), List.of())
+                        new OrderLine(500.0, new Drink(), List.of()),
+                        new OrderLine(300.0, new Drink(), List.of()),
+                        new OrderLine(200.0, new Drink(), List.of())
                 ), 1000.0)
         );
     }
@@ -79,8 +77,8 @@ public class BaseTest {
                 // Basic order with no discounts
                 Arguments.of(
                         createOrderRequestWithFixedSubtotal(List.of(
-                                new OrderLine(500.0, List.of(createCoffee("Coffee 1", 500.0)), List.of()),
-                                new OrderLine(500.0, List.of(createCoffee("Coffee 2", 500.0)), List.of())
+                                new OrderLine(500.0, createDrink("Drink 1", 500.0), List.of()),
+                                new OrderLine(500.0, createDrink("Drink 2", 500.0), List.of())
                         )),
                         false,
                         1000.0,
@@ -90,8 +88,8 @@ public class BaseTest {
                 // Order with 25% discount enabled
                 Arguments.of(
                         createOrderRequestWithFixedSubtotal(List.of(
-                                new OrderLine(650.0, List.of(createCoffee("Coffee 1", 650.0)), List.of()),
-                                new OrderLine(650.0, List.of(createCoffee("Coffee 2", 650.0)), List.of())
+                                new OrderLine(650.0, createDrink("Drink 1", 650.0), List.of()),
+                                new OrderLine(650.0, createDrink("Drink 2", 650.0), List.of())
                         )),
                         true,
                         1300.0,
@@ -101,9 +99,9 @@ public class BaseTest {
                 // Order with free item discount enabled
                 Arguments.of(
                         createOrderRequestWithFixedSubtotal(List.of(
-                                new OrderLine(400.0, List.of(createCoffee("Coffee 1", 400.0)), List.of()),
-                                new OrderLine(300.0, List.of(createCoffee("Coffee 2", 300.0)), List.of()),
-                                new OrderLine(300.0, List.of(createCoffee("Coffee 3", 300.0)), List.of())
+                                new OrderLine(400.0, createDrink("Drink 1", 400.0), List.of()),
+                                new OrderLine(300.0, createDrink("Drink 2", 300.0), List.of()),
+                                new OrderLine(300.0, createDrink("Drink 3", 300.0), List.of())
                         )),
                         true,
                         1000.0,
@@ -130,26 +128,17 @@ public class BaseTest {
     protected static List<OrderLine> createCoffeeOrderLines(int count) {
         List<OrderLine> orderLines = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            Coffee coffee = new Coffee();
-            coffee.setName("Coffee " + (i + 1));
-            coffee.setPriceInCents((i + 2) * 100.0); // Different prices: 200, 300, 400...
+            Drink drink = new Drink();
+            drink.setName("Drink " + (i + 1));
+            drink.setPriceInCents((i + 2) * 100.0); // Different prices: 200, 300, 400...
 
             orderLines.add(new OrderLine(
-                    coffee.getPriceInCents(),
-                    List.of(coffee),
+                    drink.getPriceInCents(),
+                    drink,
                     List.of()
             ));
         }
         return orderLines;
-    }
-
-    protected static OrderRequest createOrderRequest(int coffeeCount, int totalPrice) {
-        return new OrderRequest(
-                totalPrice,
-                "Tamas",
-                EUR,
-                createCoffeeOrderLines(coffeeCount)
-        );
     }
 
     protected static OrderRequest createOrderRequestWithFixedSubtotal(List<OrderLine> orderLines) {
@@ -162,10 +151,10 @@ public class BaseTest {
         );
     }
 
-    protected static Coffee createCoffee(String name, double priceInCents) {
-        Coffee coffee = new Coffee();
-        coffee.setName(name);
-        coffee.setPriceInCents(priceInCents);
-        return coffee;
+    protected static Drink createDrink(String name, double priceInCents) {
+        Drink drink = new Drink();
+        drink.setName(name);
+        drink.setPriceInCents(priceInCents);
+        return drink;
     }
 }

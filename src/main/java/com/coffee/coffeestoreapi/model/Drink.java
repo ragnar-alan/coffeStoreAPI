@@ -1,3 +1,3 @@
 package com.coffee.coffeestoreapi.model;
 
-public class Coffee extends Item {}
+public class Drink extends Item {}

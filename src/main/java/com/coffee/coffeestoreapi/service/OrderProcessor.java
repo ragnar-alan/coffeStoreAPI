@@ -3,7 +3,6 @@ package com.coffee.coffeestoreapi.service;
 import com.coffee.coffeestoreapi.config.settings.DiscountSettings;
 import com.coffee.coffeestoreapi.entity.Order;
 import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
-import com.coffee.coffeestoreapi.model.Coffee;
 import com.coffee.coffeestoreapi.model.Currency;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
@@ -13,9 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -35,7 +31,7 @@ public class OrderProcessor {
     public Order processOrder(OrderRequest orderRequest) {
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
-        order.setOrderer(orderRequest.orderer());
+        order.setOrderer(orderRequest.orderer()); //@ TODO duplicated codes
         order.setStatus(OrderStatus.PENDING);
         order.setOrderLines(orderRequest.orderLines());
 
@@ -148,7 +144,7 @@ public class OrderProcessor {
         // 1. If the total cost of the cart is more than 12 euros, there should be a 25% discount.
         quarterDiscountCalculation(subtotalInCents, discounts);
 
-        // 2. If there are 3 or more drinks in the cart, the one with the lowest amount should be free.
+        // 2. If there are 3 or more drink in the cart, the one with the lowest amount should be free.
         freeItemAfterThreeDiscountCalculation(lines, discounts);
 
         // 3. If eligible for both promotions, use the one with the lowest cart amount (highest discount value)
@@ -193,20 +189,20 @@ public class OrderProcessor {
     }
 
     private void freeItemAfterThreeDiscountCalculation(List<OrderLine> lines, List<Discount> possibleDiscounts) {
-        List<OrderLine> coffeeLines = lines.stream()
-                .filter(line -> line.coffees() != null && line.coffees().stream().anyMatch(item -> item instanceof Coffee))
+        List<OrderLine> drinkLines = lines.stream()
+                .filter(line -> line.drink() != null)
                 .toList();
 
-        if (discountSettings.isFreeItemAfterThree() && coffeeLines.size() >= 3) {
-            // Find the coffee with the lowest price
-            OrderLine cheapestCoffeeLine = coffeeLines.stream()
+        if (discountSettings.isFreeItemAfterThree() && drinkLines.size() >= 3) {
+            // Find the drink with the lowest price
+            OrderLine cheapestDrinkLine = drinkLines.stream()
                     .min(Comparator.comparing(OrderLine::priceInCents))
                     .orElse(null);
 
-            if (cheapestCoffeeLine != null) {
+            if (cheapestDrinkLine != null) {
                 Discount discount = new Discount();
-                discount.setName("Free drink for 3+ drinks in cart");
-                discount.setAmountInCents(cheapestCoffeeLine.priceInCents());
+                discount.setName("Free drink for 3+ drink in cart");
+                discount.setAmountInCents(cheapestDrinkLine.priceInCents());
                 possibleDiscounts.add(discount);
             }
         }

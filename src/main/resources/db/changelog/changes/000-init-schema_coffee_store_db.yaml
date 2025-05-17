@@ -39,6 +39,9 @@ databaseChangeLog:
                   name: total_price_in_cents
                   type: DOUBLE
               - column:
+                  name: sub_total_price_in_cents
+                  type: DOUBLE
+              - column:
                   name: currency
                   type: VARCHAR(255)
               - column:
