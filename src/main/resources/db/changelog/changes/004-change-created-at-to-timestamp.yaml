@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-change-created-at-to-timestamp
+      author: developer
+      changes:
+        - modifyDataType:
+            tableName: orders
+            columnName: created_at
+            newDataType: TIMESTAMP

@@ -2,6 +2,7 @@ package com.coffee.coffeestoreapi.service;
 
 import com.coffee.coffeestoreapi.config.settings.DiscountSettings;
 import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.model.Currency;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.coffee.coffeestoreapi.model.Currency.EUR;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -78,11 +80,11 @@ public class OrderProcessorTest extends BaseTest {
         assertEquals(expected.size(), result.size(), "Number of discounts is incorrect");
 
         if (!expected.isEmpty() && !result.isEmpty()) {
-            if (expected.get(0).getPercentage() != null) {
-                assertEquals(expected.get(0).getPercentage(), result.get(0).getPercentage(),
+            if (expected.getFirst().getPercentage() != null) {
+                assertEquals(expected.getFirst().getPercentage(), result.getFirst().getPercentage(),
                         "Percentage discount is incorrect");
-            } else if (expected.get(0).getAmountInCents() != null) {
-                assertEquals(expected.get(0).getAmountInCents(), result.get(0).getAmountInCents(), 0.001,
+            } else if (expected.getFirst().getAmountInCents() != null) {
+                assertEquals(expected.getFirst().getAmountInCents(), result.getFirst().getAmountInCents(), 0.001,
                         "Fixed discount amount is incorrect");
             }
         }
@@ -104,7 +106,7 @@ public class OrderProcessorTest extends BaseTest {
         assertEquals(OrderStatus.PENDING, result.getStatus(), "Order status should be PENDING");
         assertEquals(expectedSubtotal, result.getSubTotalPriceInCents(), 0.001, "Subtotal is incorrect");
         assertEquals(expectedTotal, result.getTotalPriceInCents(), 0.001, "Total price is incorrect");
-        assertEquals("EUR", result.getCurrency(), "Currency should be EUR");
+        assertEquals(EUR, result.getCurrency(), "Currency should be EUR");
         assertNotNull(result.getOrderNumber(), "Order number should not be null");
         assertTrue(result.getOrderNumber().startsWith("RCS-"), "Order number should start with RCS-");
     }

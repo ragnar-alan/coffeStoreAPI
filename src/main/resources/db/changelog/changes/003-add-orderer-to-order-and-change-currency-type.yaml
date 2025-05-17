@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-add-orderer-to-order-and-change-currency-type
+      author: ragnar-alan
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: orderer
+                  type: VARCHAR(255)
+                  constraints:
+                      nullable: true
+        - sql:
+            sql: ALTER TABLE orders ALTER COLUMN currency TYPE VARCHAR(255) USING currency::VARCHAR(255)

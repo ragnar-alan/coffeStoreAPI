@@ -1,9 +1,12 @@
 package com.coffee.coffeestoreapi.service;
 
+import com.coffee.coffeestoreapi.entity.Order;
 import com.coffee.coffeestoreapi.mapper.OrderMapper;
+import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.OrderDto;
-import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
+import com.coffee.coffeestoreapi.model.OrderStatus;
+import com.coffee.coffeestoreapi.model.SimpleOrderDto;
 import com.coffee.coffeestoreapi.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.net.URI;
+import java.sql.Timestamp;
 import java.util.List;
+
+import static com.coffee.coffeestoreapi.model.OrderStatus.PENDING;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +32,10 @@ public class OrderService {
      *
      * @param orderNumber the unique identifier of the order
      * @return a {@link ResponseEntity} containing the {@link OrderDto} if found,
-     *         or a 404 Not Found response if the order does not exist
+     * or a 404 Not Found response if the order does not exist
      */
-    public ResponseEntity<OrderDto> getOrder(Long orderNumber) {
-        var orderEntity = orderRepository.findById(orderNumber);
+    public ResponseEntity<OrderDto> getOrder(String orderNumber) {
+        var orderEntity = orderRepository.findByOrderNumber(orderNumber);
         return orderEntity
                 .map(order -> ResponseEntity.ok(orderMapper.orderToOrderDto(order)))
                 .orElse(ResponseEntity.notFound().build());
@@ -39,14 +45,14 @@ public class OrderService {
      * Retrieves all orders in the system.
      *
      * @return a {@link ResponseEntity} containing a list of {@link OrderDto} objects,
-     *         or an empty list if no orders exist
+     * or an empty list if no orders exist
      */
-    public ResponseEntity<List<OrderDto>> getAllOrders() {
-        var orderEntities = orderRepository.findAll();
+    public ResponseEntity<List<SimpleOrderDto>> getAllOrders() {
+        var orderEntities = orderRepository.findAllByStatusDescendingCreationOrder(PENDING);
         if (CollectionUtils.isEmpty(orderEntities)) {
             return ResponseEntity.ok(List.of());
         }
-        return ResponseEntity.ok(orderMapper.orderListToOrderDtoList(orderEntities));
+        return ResponseEntity.ok(mapOrdersToSimpleOrderDtos(orderEntities));
     }
 
     /**
@@ -55,7 +61,7 @@ public class OrderService {
      *
      * @param orderRequest the order request containing order details
      * @return a {@link ResponseEntity} with a 201 Created status and a location header
-     *         pointing to the newly created order resource
+     * pointing to the newly created order resource
      */
     @Transactional
     public ResponseEntity<Void> createOrder(OrderRequest orderRequest) {
@@ -64,5 +70,45 @@ public class OrderService {
         return ResponseEntity.created(
                 URI.create("/api/v1/orders/%s".formatted(savedOrder.getOrderNumber()))
         ).build();
+    }
+
+    @Transactional
+    public ResponseEntity<OrderDto> updateOrder(String orderNumber, AdminOrderChangeRequest adminOrderChangeRequest) {
+        var order = orderRepository.findByOrderNumber(orderNumber);
+        var processedOrder = orderProcessor.processChangedOrder(adminOrderChangeRequest, order.orElseThrow(() -> new RuntimeException("Order not found"))); //@TODO handle exception
+        return ResponseEntity.ok(orderMapper.orderToOrderDto(orderRepository.save(processedOrder)));
+
+        //I could implement a credit if the order total amount changed both directions. a store credit if the order amount decreased or a payment request if the order amount increased in the real world
+    }
+
+    @Transactional
+    public ResponseEntity<Void> deleteOrder(String orderNumber) {
+        var orderOpt = orderRepository.findByOrderNumber(orderNumber);
+        if (orderOpt.isPresent()) {
+            var order = orderOpt.get();
+            order.setCanceledAt(new Timestamp(System.currentTimeMillis()));
+            order.setStatus(OrderStatus.CANCELLED);
+            orderRepository.save(order);
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    private List<SimpleOrderDto> mapOrdersToSimpleOrderDtos(List<Order> orderEntities) {
+        return orderEntities.stream()
+                .map(OrderService::getSimpleOrderDto)
+                .toList();
+    }
+
+    private static SimpleOrderDto getSimpleOrderDto(Order order) {
+        return SimpleOrderDto.builder()
+                .orderNumber(order.getOrderNumber())
+                .orderer(order.getOrderer())
+                .createdAt(order.getCreatedAt().toLocalDateTime())
+                .currency(order.getCurrency())
+                .totalPriceInCents(order.getTotalPriceInCents())
+                .discount(order.getDiscounts())
+                .build();
     }
 }
