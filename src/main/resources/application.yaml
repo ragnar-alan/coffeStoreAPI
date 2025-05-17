@@ -8,10 +8,9 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create # DEV_ONLY
+      ddl-auto: none
   liquibase:
     enabled: true
-
     drop-first: true # DEV_ONLY
   jackson:
     property-naming-strategy: SNAKE_CASE

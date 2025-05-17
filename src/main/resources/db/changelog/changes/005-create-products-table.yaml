@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 005-create-table-products
-      author: system
+      author: ragnar-alan
       changes:
         - createTable:
             tableName: products
@@ -9,6 +9,7 @@ databaseChangeLog:
               - column:
                   name: id
                   type: BIGINT
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -18,6 +19,7 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
+                    unique: true
               - column:
                   name: price_in_cents
                   type: INTEGER
@@ -28,127 +30,3 @@ databaseChangeLog:
                   type: VARCHAR(50)
                   constraints:
                     nullable: false
-  - changeSet:
-      id: 006-insert-initial-products
-      author: system
-      changes:
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Black Coffee
-              - column:
-                  name: price
-                  value: 4
-              - column:
-                  name: type
-                  value: DRINK
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Latte
-              - column:
-                  name: price
-                  value: 5
-              - column:
-                  name: type
-                  value: DRINK
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Mocha
-              - column:
-                  name: price
-                  value: 6
-              - column:
-                  name: type
-                  value: DRINK
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Tea
-              - column:
-                  name: price
-                  value: 3
-              - column:
-                  name: type
-                  value: DRINK
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Milk
-              - column:
-                  name: price
-                  value: 2
-              - column:
-                  name: type
-                  value: TOPPING
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Hazelnut syrup
-              - column:
-                  name: price
-                  value: 3
-              - column:
-                  name: type
-                  value: TOPPING
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Chocolate sauce
-              - column:
-                  name: price
-                  value: 5
-              - column:
-                  name: type
-                  value: TOPPING
-        - insert:
-            tableName: products
-            columns:
-              - column:
-                  name: id
-                  valueSequenceNext: hibernate_sequence
-              - column:
-                  name: product_name
-                  value: Lemon
-              - column:
-                  name: price
-                  value: 2
-              - column:
-                  name: type
-                  value: TOPPING

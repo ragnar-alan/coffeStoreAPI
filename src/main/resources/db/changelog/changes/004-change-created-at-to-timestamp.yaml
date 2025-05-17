@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 004-change-created-at-to-timestamp
-      author: developer
+      author: ragnar-alan
       changes:
         - modifyDataType:
             tableName: orders
