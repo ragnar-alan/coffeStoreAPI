@@ -48,7 +48,7 @@ public class AdminController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of orders retrieved successfully",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = OrderDto.class)))
+                            schema = @Schema(implementation = SimpleOrderDto.class)))
     })
     @GetMapping("/list")
     public ResponseEntity<List<SimpleOrderDto>> getOrders() {
