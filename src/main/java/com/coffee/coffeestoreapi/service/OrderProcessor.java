@@ -2,7 +2,9 @@ package com.coffee.coffeestoreapi.service;
 
 import com.coffee.coffeestoreapi.config.settings.DiscountSettings;
 import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.Coffee;
+import com.coffee.coffeestoreapi.model.Currency;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
@@ -11,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -30,6 +35,7 @@ public class OrderProcessor {
     public Order processOrder(OrderRequest orderRequest) {
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
+        order.setOrderer(orderRequest.orderer());
         order.setStatus(OrderStatus.PENDING);
         order.setOrderLines(orderRequest.orderLines());
 
@@ -50,7 +56,34 @@ public class OrderProcessor {
             order.setTotalPriceInCents(subtotalInCents);
         }
 
-        order.setCurrency("EUR");
+        order.setCurrency(Currency.EUR);
+        return order;
+    }
+
+    public Order processChangedOrder(AdminOrderChangeRequest request, Order order) {
+        order.setOrderer(request.orderer());
+        //@TODO add logic to check order status. If the order is processing or completed, throw an exception
+        order.setStatus(OrderStatus.PENDING);
+        order.setOrderLines(request.orderLines());
+
+        // Calculate subtotal price (sum of all items)
+        double subtotalInCents = calculateSubtotalInCents(request.orderLines());
+        order.setSubTotalPriceInCents(subtotalInCents);
+
+        // Apply discounts if enabled
+        if (discountSettings.isEnabled()) {
+            List<Discount> discounts = calculateDiscounts(request.orderLines(), subtotalInCents);
+            order.setDiscounts(discounts);
+
+            // Apply discount to get total price
+            double totalDiscount = calculateTotalDiscount(discounts, subtotalInCents);
+            order.setTotalPriceInCents(subtotalInCents - totalDiscount);
+        } else {
+            order.setDiscounts(List.of());
+            order.setTotalPriceInCents(subtotalInCents);
+        }
+
+        order.setCurrency(Currency.EUR);
         return order;
     }
 
@@ -110,19 +143,17 @@ public class OrderProcessor {
             return List.of();
         }
 
-        List<Discount> possibleDiscounts = new ArrayList<>();
+        List<Discount> discounts = new ArrayList<>();
 
         // 1. If the total cost of the cart is more than 12 euros, there should be a 25% discount.
-        quarterDiscountCalculation(subtotalInCents, possibleDiscounts);
+        quarterDiscountCalculation(subtotalInCents, discounts);
 
         // 2. If there are 3 or more drinks in the cart, the one with the lowest amount should be free.
-        freeItemAfterThreeDiscountCalculation(lines, possibleDiscounts);
+        freeItemAfterThreeDiscountCalculation(lines, discounts);
 
         // 3. If eligible for both promotions, use the one with the lowest cart amount (highest discount value)
-        List<Discount> possibleDiscounts1 = calculatePossibleDiscountOnOrder(subtotalInCents, possibleDiscounts);
-        if (possibleDiscounts1 != null) return possibleDiscounts1;
-
-        return possibleDiscounts;
+        List<Discount> possibleDiscounts = calculatePossibleDiscountOnOrder(subtotalInCents, discounts);
+        return possibleDiscounts != null ? possibleDiscounts : discounts;
     }
 
     /**
@@ -137,6 +168,7 @@ public class OrderProcessor {
     }
 
     private static List<Discount> calculatePossibleDiscountOnOrder(double subtotalInCents, List<Discount> possibleDiscounts) {
+        // @TODO: check the discount logic
         if (possibleDiscounts.size() > 1) {
             // Calculate the actual discount amount for each discount
             double percentageDiscountAmount = subtotalInCents * 0.25; // 25% discount
@@ -146,14 +178,14 @@ public class OrderProcessor {
                     .findFirst()
                     .orElse(0.0);
 
-            // Keep only the discount that results in the lowest cart amount (highest discount value)
+            // Keep only the discount that results in the lowest cart amount (lowest discount value)
             if (percentageDiscountAmount >= freeItemDiscountAmount) {
                 return possibleDiscounts.stream()
-                        .filter(d -> d.getPercentage() != null)
+                        .filter(discount -> discount.getAmountInCents() != null)
                         .toList();
             } else {
                 return possibleDiscounts.stream()
-                        .filter(d -> d.getAmountInCents() != null)
+                        .filter(discount -> discount.getPercentage() != null)
                         .toList();
             }
         }

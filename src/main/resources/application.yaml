@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop # DEV_ONLY
+      ddl-auto: create # DEV_ONLY
   liquibase:
     enabled: true
 

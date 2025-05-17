@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -14,13 +15,14 @@ import java.util.List;
 public class OrderDto {
     private Long id;
     private String orderNumber;
+    private String orderer;
     private OrderStatus status;
     private List<Discount> discounts;
     private Double subTotalPriceInCents;
     private Double totalPriceInCents;
-    private String currency;
+    private Currency currency;
     private List<OrderLine> orderLines;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private LocalDate updatedAt;
     private LocalDate processedAt;
     private LocalDate completedAt;

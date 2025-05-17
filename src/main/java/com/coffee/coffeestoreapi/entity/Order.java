@@ -1,11 +1,13 @@
 package com.coffee.coffeestoreapi.entity;
 
+import com.coffee.coffeestoreapi.model.Currency;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -18,12 +20,16 @@ import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 @Entity(name = "orders")
 public class Order {
 
@@ -33,6 +39,9 @@ public class Order {
     private Long id;
 
     private String orderNumber;
+
+    @Nullable
+    private String orderer;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
@@ -45,14 +54,15 @@ public class Order {
 
     private Double totalPriceInCents;
 
-    private String currency;
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<OrderLine> orderLines;
 
-    @CreatedBy
-    private LocalDate createdAt;
+    @CreatedDate
+    private Timestamp createdAt;
 
     @UpdateTimestamp
     @Nullable
@@ -62,7 +72,6 @@ public class Order {
 
     private LocalDate completedAt;
 
-    @SoftDelete
-    private LocalDate canceledAt;
+    private Timestamp canceledAt;
 
 }

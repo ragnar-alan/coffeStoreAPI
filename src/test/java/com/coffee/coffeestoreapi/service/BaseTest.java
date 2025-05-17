@@ -1,6 +1,7 @@
 package com.coffee.coffeestoreapi.service;
 
 import com.coffee.coffeestoreapi.model.Coffee;
+import com.coffee.coffeestoreapi.model.Currency;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static com.coffee.coffeestoreapi.model.Currency.EUR;
 
 public class BaseTest {
     // Test data generators
@@ -143,9 +146,9 @@ public class BaseTest {
     protected static OrderRequest createOrderRequest(int coffeeCount, int totalPrice) {
         return new OrderRequest(
                 totalPrice,
-                "EUR",
-                createCoffeeOrderLines(coffeeCount),
-                LocalDate.now()
+                "Tamas",
+                EUR,
+                createCoffeeOrderLines(coffeeCount)
         );
     }
 
@@ -153,9 +156,9 @@ public class BaseTest {
         double subtotal = orderLines.stream().mapToDouble(OrderLine::priceInCents).sum();
         return new OrderRequest(
                 (int) subtotal,
-                "EUR",
-                orderLines,
-                LocalDate.now()
+                "Tamas",
+                EUR,
+                orderLines
         );
     }
 
