@@ -9,6 +9,7 @@ import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
 import com.coffee.coffeestoreapi.model.OrderStatus;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OrderProcessor {
@@ -57,8 +59,8 @@ public class OrderProcessor {
     }
 
     public Order processChangedOrder(AdminOrderChangeRequest request, Order order) {
+
         order.setOrderer(request.orderer());
-        //@TODO add logic to check order status. If the order is processing or completed, throw an exception
         order.setStatus(OrderStatus.PENDING);
         order.setOrderLines(request.orderLines());
 

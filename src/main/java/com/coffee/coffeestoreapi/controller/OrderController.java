@@ -8,7 +8,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,10 +18,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+@Tag(name = "Orders", description = "Order management API")
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
-@Tag(name = "Orders", description = "Order management API")
 public class OrderController {
     private final OrderService orderService;
 
@@ -32,7 +35,8 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Void> createOrder(
             @Parameter(description = "Order details", required = true) 
-            @RequestBody OrderRequest lines) {
-        return orderService.createOrder(lines);
+            @Valid @RequestBody OrderRequest request) {
+        log.debug("Received request to create an order: {}", request);
+        return orderService.createOrder(request);
     }
 }
