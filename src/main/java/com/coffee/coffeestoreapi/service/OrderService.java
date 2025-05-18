@@ -7,9 +7,10 @@ import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.OrderDto;
 import com.coffee.coffeestoreapi.model.OrderRequest;
 import com.coffee.coffeestoreapi.model.OrderStatus;
+import com.coffee.coffeestoreapi.model.PopularItemsDto;
 import com.coffee.coffeestoreapi.model.SimpleOrderDto;
 import com.coffee.coffeestoreapi.repository.OrderRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import java.net.URI;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import static com.coffee.coffeestoreapi.model.OrderStatus.PENDING;
 
@@ -106,6 +108,47 @@ public class OrderService {
 
         log.warn("Order not found when deleting the order with the given order number: {}", orderNumber);
         return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Retrieves the most popular drink and topping across all orders.
+     *
+     * @return a {@link ResponseEntity} containing the {@link PopularItemsDto} with information
+     * about the most popular drink and topping
+     */
+    @Transactional
+    public ResponseEntity<PopularItemsDto> getMostPopularItems() {
+        Map<String, Object> mostPopularDrink = orderRepository.findMostPopularDrink();
+        Map<String, Object> mostPopularTopping = orderRepository.findMostPopularTopping();
+
+        // Handle case when there are no orders yet
+        if (mostPopularDrink == null || mostPopularDrink.isEmpty() ||
+                mostPopularTopping == null || mostPopularTopping.isEmpty()) {
+            log.info("No orders found when getting the most popular items");
+            return ResponseEntity.ok(
+                    PopularItemsDto.builder()
+                            .mostPopularDrink("No drinks ordered yet")
+                            .drinkCount(0L)
+                            .mostPopularTopping("No toppings ordered yet")
+                            .toppingCount(0L)
+                            .build()
+            );
+        }
+
+        String drinkName = (String) mostPopularDrink.get("name");
+        Long drinkCount = Long.valueOf(mostPopularDrink.get("count").toString());
+
+        String toppingName = (String) mostPopularTopping.get("name");
+        Long toppingCount = Long.valueOf(mostPopularTopping.get("count").toString());
+
+        return ResponseEntity.ok(
+                PopularItemsDto.builder()
+                        .mostPopularDrink(drinkName)
+                        .drinkCount(drinkCount)
+                        .mostPopularTopping(toppingName)
+                        .toppingCount(toppingCount)
+                        .build()
+        );
     }
 
     private List<SimpleOrderDto> mapOrdersToSimpleOrderDtos(List<Order> orderEntities) {

@@ -1,7 +1,7 @@
 package com.coffee.coffeestoreapi.model;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public record ProductChangeRequest(
         String productName,
