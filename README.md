@@ -30,104 +30,49 @@ This will compile the code, run tests, and create a JAR file in the `target` dir
 
 ## Running the Application Locally
 
-### Option 1: Using Maven
-
-1. Set up a PostgreSQL database and configure the connection details:
+To run the application locally, run the following command:
 
 ```bash
-set SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/coffee_store
-set SPRING_DATASOURCE_USERNAME=user
-set SPRING_DATASOURCE_PASSWORD=password
+mvn clean package -DskipTests 
 ```
-
-2. Run the application:
-
+And then run the JAR file in docker as a daemon:
 ```bash
-mvn spring-boot:run
+docker-compose up -d --build 
 ```
-
-### Option 2: Using Java
-
-1. Set up a PostgreSQL database and configure the connection details as environment variables (same as above).
-
-2. Run the JAR file:
-
+I recommend to do it without the daemon flag to see the logs in the console:
 ```bash
-java -jar target/coffeeStoreAPI-0.0.1-SNAPSHOT.jar
+docker-compose up --build
 ```
-
-### Option 3: Using Docker Compose
-
-The easiest way to run the application is using Docker Compose, which will set up both the application and the PostgreSQL database:
-
-1. Build the application:
-
-```bash
-mvn clean package
-```
-
-2. Start the containers:
-
-```bash
-docker-compose up -d
-```
-
-This will start both the application and the PostgreSQL database in containers.
 
 ## Debugging the Application
 
 ### Local Debugging
 
-When running the application locally with Maven, you can enable debug mode:
+When you run the application in Docker you can remote debug the application. That means you create a new run configuration in your IDE (e.g., IntelliJ IDEA) to connect to the running Docker container.
 
-```bash
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
-```
+### How to do that in IntelliJ?
+- Click here to edit or add a run configuration.
 
+![img_1.png](img_1.png)
+
+After that click to the top left to add a new ```Remote JVM debug``` configuration.
+
+If the port is not 5005 then change it to 5005. The end result should look like this:
+
+![img.png](img.png)
 Then connect your IDE to port 5005.
 
-### Remote Debugging with Docker
-
-The Docker Compose configuration already includes remote debugging capabilities on port 5005. To use it:
-
-1. Start the application with Docker Compose:
-
-```bash
-docker-compose up -d
-```
-
-2. Connect your IDE's remote debugger to localhost:5005.
 
 ## API Endpoints
 
-The application exposes the following REST endpoints:
+
 
 ### Orders API
 
-- `GET /api/v1/orders/{orderId}` - Get a specific order by ID
-- `GET /api/v1/orders/list` - Get all orders
-- `POST /api/v1/orders` - Create a new order
+### Admin API
 
-Example request for creating an order:
+### Product API
 
-```json
-{
-  "order_lines": [
-    {
-      "item": {
-        "type": "COFFEE",
-        "name": "Latte"
-      },
-      "toppings": [
-        {
-          "name": "Caramel"
-        }
-      ],
-      "quantity": 2
-    }
-  ]
-}
-```
 
 ## Configuration
 

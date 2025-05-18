@@ -1,6 +1,7 @@
 package com.coffee.coffeestoreapi.service;
 
 import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.exception.OrderNotFoundException;
 import com.coffee.coffeestoreapi.mapper.OrderMapper;
 import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.OrderDto;
@@ -10,6 +11,7 @@ import com.coffee.coffeestoreapi.model.SimpleOrderDto;
 import com.coffee.coffeestoreapi.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +24,7 @@ import static com.coffee.coffeestoreapi.model.OrderStatus.PENDING;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
@@ -38,7 +41,10 @@ public class OrderService {
         var orderEntity = orderRepository.findByOrderNumber(orderNumber);
         return orderEntity
                 .map(order -> ResponseEntity.ok(orderMapper.orderToOrderDto(order)))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> {
+                    log.error("Order not found when getting the order with the given order number: {}", orderNumber);
+                    return ResponseEntity.notFound().build();
+                });
     }
 
     /**
@@ -74,11 +80,17 @@ public class OrderService {
 
     @Transactional
     public ResponseEntity<OrderDto> updateOrder(String orderNumber, AdminOrderChangeRequest adminOrderChangeRequest) {
-        var order = orderRepository.findByOrderNumber(orderNumber);
-        var processedOrder = orderProcessor.processChangedOrder(adminOrderChangeRequest, order.orElseThrow(() -> new RuntimeException("Order not found"))); //@TODO handle exception
+        var orderOpt = orderRepository.findByOrderNumberAndStatus(orderNumber, PENDING);
+        var order = orderOpt.orElseThrow(() -> {
+            log.error("Order not found when updating the order with the given order number: {} and status: {}", orderNumber, PENDING);
+            return new OrderNotFoundException("Order not found when updating the order with the given order number: %s".formatted(orderNumber));
+        });
+        var processedOrder = orderProcessor.processChangedOrder(adminOrderChangeRequest, order);
         return ResponseEntity.ok(orderMapper.orderToOrderDto(orderRepository.save(processedOrder)));
 
-        //I could implement a credit if the order total amount changed both directions. a store credit if the order amount decreased or a payment request if the order amount increased in the real world
+        //I could implement a credit if the order total amount changed both directions.
+        // a store credit if the order amount decreased or a payment request
+        // if the order amount increased in the real world
     }
 
     @Transactional
@@ -92,6 +104,7 @@ public class OrderService {
             return ResponseEntity.noContent().build();
         }
 
+        log.warn("Order not found when deleting the order with the given order number: {}", orderNumber);
         return ResponseEntity.notFound().build();
     }
 

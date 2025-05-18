@@ -44,6 +44,8 @@ databaseChangeLog:
               - column:
                   name: currency
                   type: VARCHAR(255)
+                  constraints:
+                    nullable: true
               - column:
                   name: order_lines
                   type: JSONB

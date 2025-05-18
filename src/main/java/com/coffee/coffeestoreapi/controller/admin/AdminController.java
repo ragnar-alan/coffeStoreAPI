@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -55,7 +56,7 @@ public class AdminController {
     }
 
     @PatchMapping("/{orderNumber}")
-    public ResponseEntity<OrderDto> updateOrder(@PathVariable String orderNumber, @RequestBody AdminOrderChangeRequest adminOrderChangeRequest) {
+    public ResponseEntity<OrderDto> updateOrder(@PathVariable String orderNumber, @Valid @RequestBody AdminOrderChangeRequest adminOrderChangeRequest) {
         return orderService.updateOrder(orderNumber, adminOrderChangeRequest);
     }
 

@@ -5,6 +5,7 @@ import com.coffee.coffeestoreapi.model.ProductChangeRequest;
 import com.coffee.coffeestoreapi.model.ProductCreateRequest;
 import com.coffee.coffeestoreapi.model.ProductDto;
 import com.coffee.coffeestoreapi.service.admin.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,18 +25,26 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDto> getProducts(@PathVariable Long productId) {
+        return productService.getProduct(productId);
+    }
+
     @GetMapping("/list")
     public ResponseEntity<List<ProductDto>> getProducts() {
         return productService.getProducts();
     }
 
     @PostMapping
-    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductCreateRequest productChangeRequest) {
+    public ResponseEntity<String> createProduct(@Valid @RequestBody ProductCreateRequest productChangeRequest) {
         return productService.createProduct(productChangeRequest);
     }
 
     @PatchMapping("/{productId}")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long productId, @RequestBody ProductChangeRequest productChangeRequest) {
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable Long productId,
+            @Valid @RequestBody ProductChangeRequest productChangeRequest
+    ) {
         return productService.updateProduct(productId, productChangeRequest);
     }
 
