@@ -13,7 +13,7 @@ import java.util.List;
 public record OrderRequest(
 
         @NotNull(message = "Price should not be empty or null")
-        /*@Min(value = 0, message = "Price should be greater than or equal to 0")*/
+        @Min(value = 0, message = "Price should be greater than or equal to 0")
         Integer totalPriceInCents,
 
         @Size(max = 50, message = "Orderer name should not exceed 50 characters")
