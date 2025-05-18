@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "product_name": "Black Coffee",
+    "price_in_cents": 400,
+    "type": "DRINK",
+    "is_favorite": true
+  },
+  {
+    "id": 2,
+    "product_name": "Latte",
+    "price_in_cents": 500,
+    "type": "DRINK",
+    "is_favorite": false
+  },
+  {
+    "id": 3,
+    "product_name": "Mocha",
+    "price_in_cents": 600,
+    "type": "DRINK",
+    "is_favorite": false
+  },
+  {
+    "id": 4,
+    "product_name": "Tea",
+    "price_in_cents": 300,
+    "type": "DRINK",
+    "is_favorite": true
+  },
+  {
+    "id": 5,
+    "product_name": "Milk",
+    "price_in_cents": 200,
+    "type": "TOPPING",
+    "is_favorite": true
+  },
+  {
+    "id": 6,
+    "product_name": "Hazelnut syrup",
+    "price_in_cents": 300,
+    "type": "TOPPING",
+    "is_favorite": false
+  },
+  {
+    "id": 7,
+    "product_name": "Chocolate sauce",
+    "price_in_cents": 500,
+    "type": "TOPPING",
+    "is_favorite": true
+  },
+  {
+    "id": 8,
+    "product_name": "Lemon",
+    "price_in_cents": 2,
+    "type": "TOPPING",
+    "is_favorite": false
+  }
+]

@@ -1,9 +1,11 @@
 package com.coffee.coffeestoreapi.controller.admin;
 
 
+import com.coffee.coffeestoreapi.model.PopularItemsDto;
 import com.coffee.coffeestoreapi.model.ProductChangeRequest;
 import com.coffee.coffeestoreapi.model.ProductCreateRequest;
 import com.coffee.coffeestoreapi.model.ProductDto;
+import com.coffee.coffeestoreapi.service.OrderService;
 import com.coffee.coffeestoreapi.service.admin.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.List;
 @RestController
 public class ProductController {
     private final ProductService productService;
+    private final OrderService orderService;
 
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDto> getProducts(@PathVariable Long productId) {
@@ -51,5 +54,16 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
         return productService.deleteProduct(productId);
+    }
+
+    /**
+     * Retrieves the most popular drink and topping across all orders.
+     *
+     * @return a {@link ResponseEntity} containing the {@link PopularItemsDto} with information
+     * about the most popular drink and topping
+     */
+    @GetMapping("/most-popular")
+    public ResponseEntity<PopularItemsDto> getMostPopularItems() {
+        return orderService.getMostPopularItems();
     }
 }

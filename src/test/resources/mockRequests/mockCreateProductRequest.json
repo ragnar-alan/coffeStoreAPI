@@ -1,0 +1,6 @@
+{
+  "product_name": "Espresso2",
+  "price_in_cents": 200,
+  "type": "DRINK",
+  "is_favorite": true
+}

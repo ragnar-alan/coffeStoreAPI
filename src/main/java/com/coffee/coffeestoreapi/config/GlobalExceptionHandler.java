@@ -1,5 +1,7 @@
 package com.coffee.coffeestoreapi.config;
 
+import com.coffee.coffeestoreapi.exception.OrderNotFoundException;
+import com.coffee.coffeestoreapi.exception.ProductAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

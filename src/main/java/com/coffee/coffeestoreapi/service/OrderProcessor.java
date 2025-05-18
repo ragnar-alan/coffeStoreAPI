@@ -33,56 +33,11 @@ public class OrderProcessor {
     public Order processOrder(OrderRequest orderRequest) {
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
-        order.setOrderer(orderRequest.orderer()); //@ TODO duplicated codes
-        order.setStatus(OrderStatus.PENDING);
-        order.setOrderLines(orderRequest.orderLines());
-
-        // Calculate subtotal price (sum of all items)
-        double subtotalInCents = calculateSubtotalInCents(orderRequest.orderLines());
-        order.setSubTotalPriceInCents(subtotalInCents);
-
-        // Apply discounts if enabled
-        if (discountSettings.isEnabled()) {
-            List<Discount> discounts = calculateDiscounts(orderRequest.orderLines(), subtotalInCents);
-            order.setDiscounts(discounts);
-
-            // Apply discount to get total price
-            double totalDiscount = calculateTotalDiscount(discounts, subtotalInCents);
-            order.setTotalPriceInCents(subtotalInCents - totalDiscount);
-        } else {
-            order.setDiscounts(List.of());
-            order.setTotalPriceInCents(subtotalInCents);
-        }
-
-        order.setCurrency(Currency.EUR);
-        return order;
+        return populateOrder(orderRequest.orderer(), orderRequest.orderLines(), order);
     }
 
     public Order processChangedOrder(AdminOrderChangeRequest request, Order order) {
-
-        order.setOrderer(request.orderer());
-        order.setStatus(OrderStatus.PENDING);
-        order.setOrderLines(request.orderLines());
-
-        // Calculate subtotal price (sum of all items)
-        double subtotalInCents = calculateSubtotalInCents(request.orderLines());
-        order.setSubTotalPriceInCents(subtotalInCents);
-
-        // Apply discounts if enabled
-        if (discountSettings.isEnabled()) {
-            List<Discount> discounts = calculateDiscounts(request.orderLines(), subtotalInCents);
-            order.setDiscounts(discounts);
-
-            // Apply discount to get total price
-            double totalDiscount = calculateTotalDiscount(discounts, subtotalInCents);
-            order.setTotalPriceInCents(subtotalInCents - totalDiscount);
-        } else {
-            order.setDiscounts(List.of());
-            order.setTotalPriceInCents(subtotalInCents);
-        }
-
-        order.setCurrency(Currency.EUR);
-        return order;
+        return populateOrder(request.orderer(), request.orderLines(), order);
     }
 
     /**
@@ -166,12 +121,11 @@ public class OrderProcessor {
     }
 
     private static List<Discount> calculatePossibleDiscountOnOrder(double subtotalInCents, List<Discount> possibleDiscounts) {
-        // @TODO: check the discount logic
         if (possibleDiscounts.size() > 1) {
             // Calculate the actual discount amount for each discount
             double percentageDiscountAmount = subtotalInCents * 0.25; // 25% discount
             double freeItemDiscountAmount = possibleDiscounts.stream()
-                    .filter(d -> d.getAmountInCents() != null)
+                    .filter(discount -> discount.getAmountInCents() != null)
                     .mapToDouble(Discount::getAmountInCents)
                     .findFirst()
                     .orElse(0.0);
@@ -218,5 +172,27 @@ public class OrderProcessor {
             discount.setAmountInCents(subtotalInCents * 0.25);
             possibleDiscounts.add(discount);
         }
+    }
+
+    private Order populateOrder(String orderer, List<OrderLine> orderLines, Order order) {
+        order.setOrderer(orderer);
+        order.setStatus(OrderStatus.PENDING);
+        order.setOrderLines(orderLines);
+
+        double subtotalInCents = calculateSubtotalInCents(orderLines);
+        order.setSubTotalPriceInCents(subtotalInCents);
+
+        if (discountSettings.isEnabled()) {
+            List<Discount> discounts = calculateDiscounts(orderLines, subtotalInCents);
+            order.setDiscounts(discounts);
+            double totalDiscount = calculateTotalDiscount(discounts, subtotalInCents);
+            order.setTotalPriceInCents(subtotalInCents - totalDiscount);
+        } else {
+            order.setDiscounts(List.of());
+            order.setTotalPriceInCents(subtotalInCents);
+        }
+
+        order.setCurrency(Currency.EUR);
+        return order;
     }
 }

@@ -1,0 +1,34 @@
+{
+  "orderer": "Tamas",
+  "order_lines": [
+    {
+      "price_in_cents": 1300,
+      "coffees": [
+        {
+          "name": "Latte",
+          "price_in_cents": 500
+        }
+      ],
+      "toppings": [
+        {
+          "name": "Chocolate Syrup",
+          "price_in_cents": 500
+        },
+        {
+          "name": "Hazelnut Syrup",
+          "price_in_cents": 300
+        }
+      ]
+    },
+    {
+      "price_in_cents": 500,
+      "coffees": [
+        {
+          "name": "Latte",
+          "price_in_cents": 500
+        }
+      ],
+      "toppings": []
+    }
+  ]
+}
