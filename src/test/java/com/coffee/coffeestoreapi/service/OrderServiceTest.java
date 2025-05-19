@@ -6,7 +6,6 @@ import com.coffee.coffeestoreapi.mapper.OrderMapper;
 import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.OrderDto;
 import com.coffee.coffeestoreapi.model.OrderRequest;
-import com.coffee.coffeestoreapi.model.OrderStatus;
 import com.coffee.coffeestoreapi.model.PopularItemsDto;
 import com.coffee.coffeestoreapi.model.SimpleOrderDto;
 import com.coffee.coffeestoreapi.repository.OrderRepository;
@@ -34,10 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
@@ -107,7 +104,7 @@ class OrderServiceTest extends BaseTest {
             createTestOrder("RCS-20230101000000002")
         );
         
-        when(orderRepository.findAllByStatusDescendingCreationOrder(PENDING)).thenReturn(orders);
+        when(orderRepository.findAllDescendingCreationOrder()).thenReturn(orders);
 
         // When
         ResponseEntity<List<SimpleOrderDto>> response = orderService.getAllOrders();
@@ -118,14 +115,14 @@ class OrderServiceTest extends BaseTest {
         assertEquals(2, response.getBody().size());
         assertEquals("RCS-20230101000000001", response.getBody().get(0).getOrderNumber());
         assertEquals("RCS-20230101000000002", response.getBody().get(1).getOrderNumber());
-        verify(orderRepository).findAllByStatusDescendingCreationOrder(PENDING);
+        verify(orderRepository).findAllDescendingCreationOrder();
     }
 
     @Test
     @DisplayName("getAllOrders should return empty list when no orders exist")
     void getAllOrders_ShouldReturnEmptyList_WhenNoOrdersExist() {
         // Given
-        when(orderRepository.findAllByStatusDescendingCreationOrder(PENDING)).thenReturn(Collections.emptyList());
+        when(orderRepository.findAllDescendingCreationOrder()).thenReturn(Collections.emptyList());
 
         // When
         ResponseEntity<List<SimpleOrderDto>> response = orderService.getAllOrders();
@@ -134,7 +131,7 @@ class OrderServiceTest extends BaseTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(0, response.getBody().size());
-        verify(orderRepository).findAllByStatusDescendingCreationOrder(PENDING);
+        verify(orderRepository).findAllDescendingCreationOrder();
     }
 
     @Test

@@ -1,0 +1,68 @@
+/* Custom styles for Coffee Store Admin */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.jumbotron {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card {
+    transition: transform 0.3s;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary {
+    background-color: #6f4e37; /* Coffee brown */
+    border-color: #6f4e37;
+}
+
+.btn-primary:hover {
+    background-color: #5a3d29;
+    border-color: #5a3d29;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+.action-buttons .btn {
+    margin-right: 5px;
+}
+
+.footer {
+    margin-top: 50px;
+}
+
+/* Modal styles */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Form styles */
+.form-label {
+    font-weight: 500;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
