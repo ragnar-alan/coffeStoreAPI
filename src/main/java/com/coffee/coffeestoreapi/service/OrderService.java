@@ -56,7 +56,7 @@ public class OrderService {
      * or an empty list if no orders exist
      */
     public ResponseEntity<List<SimpleOrderDto>> getAllOrders() {
-        var orderEntities = orderRepository.findAllByStatusDescendingCreationOrder(PENDING);
+        var orderEntities = orderRepository.findAllDescendingCreationOrder();
         if (CollectionUtils.isEmpty(orderEntities)) {
             return ResponseEntity.ok(List.of());
         }
@@ -165,6 +165,7 @@ public class OrderService {
                 .currency(order.getCurrency())
                 .totalPriceInCents(order.getTotalPriceInCents())
                 .discount(order.getDiscounts())
+                .status(order.getStatus())
                 .build();
     }
 }

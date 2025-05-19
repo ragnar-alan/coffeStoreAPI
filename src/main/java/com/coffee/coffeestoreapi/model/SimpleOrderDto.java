@@ -17,4 +17,5 @@ public class SimpleOrderDto {
     private Currency currency;
     private List<Discount> discount;
     private Double totalPriceInCents;
+    private OrderStatus status;
 }
