@@ -29,13 +29,15 @@ import java.util.List;
 public class AdminController {
     private final OrderService orderService;
 
-    @Operation(summary = "Get order by orderNumber", description = "Returns a single order based on the provided orderNumber")
+
+    @Operation(
+            summary = "Get order by order number",
+            description = "Retrieves the details of a specific order by its order number."
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order found",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = OrderDto.class))),
-            @ApiResponse(responseCode = "404", description = "Order not found",
-                    content = @Content)
+                    content = @Content(schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found")
     })
     @GetMapping("/{orderNumber}")
     public ResponseEntity<OrderDto> getOrder(
@@ -44,22 +46,42 @@ public class AdminController {
         return orderService.getOrder(orderNumber);
     }
 
-    @Operation(summary = "Get all orders", description = "Returns a list of all orders")
+    @Operation(
+            summary = "List all orders",
+            description = "Retrieves a list of all orders with basic information."
+    )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of orders retrieved successfully",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SimpleOrderDto.class)))
+            @ApiResponse(responseCode = "200", description = "List of orders",
+                    content = @Content(schema = @Schema(implementation = SimpleOrderDto.class)))
     })
     @GetMapping("/list")
     public ResponseEntity<List<SimpleOrderDto>> getOrders() {
         return orderService.getAllOrders();
     }
 
+    @Operation(
+            summary = "Update an order",
+            description = "Updates an existing order with the provided changes."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order updated",
+                    content = @Content(schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "404", description = "Order not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid request")
+    })
     @PatchMapping("/{orderNumber}")
     public ResponseEntity<OrderDto> updateOrder(@PathVariable String orderNumber, @Valid @RequestBody AdminOrderChangeRequest adminOrderChangeRequest) {
         return orderService.updateOrder(orderNumber, adminOrderChangeRequest);
     }
 
+    @Operation(
+            summary = "Delete an order",
+            description = "Deletes an order by its order number."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Order deleted"),
+            @ApiResponse(responseCode = "404", description = "Order not found")
+    })
     @DeleteMapping("/{orderNumber}")
     public ResponseEntity<Void> deleteOrder(@PathVariable String orderNumber) {
         return orderService.deleteOrder(orderNumber);
