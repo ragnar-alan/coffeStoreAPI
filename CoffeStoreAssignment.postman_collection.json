@@ -16,7 +16,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"total_price_in_cents\": 2800,\r\n    \"currency\": \"EUR\",\r\n    \"orderer\": \"Tamas\",\r\n    \"order_lines\": [\r\n        {\r\n        \"price_in_cents\": 1300,\r\n        \"coffees\": [\r\n            {\r\n            \"name\": \"Latte\",\r\n            \"price_in_cents\": 500\r\n            }\r\n        ],\r\n        \"toppings\": [\r\n            {\r\n            \"name\": \"Chocolate Syrup\",\r\n            \"price_in_cents\": 500\r\n            },\r\n            {\r\n            \"name\": \"Hazelnut Syrup\",\r\n            \"price_in_cents\": 300\r\n            }\r\n        ]\r\n        },\r\n        {\r\n        \"price_in_cents\": 1500,\r\n        \"coffees\": [\r\n            {\r\n            \"name\": \"Espresso\",\r\n            \"price_in_cents\": 1500\r\n            }\r\n        ],\r\n        \"toppings\": []\r\n        }\r\n    ],\r\n    \"created_at\": \"2023-10-01T12:00:00Z\"\r\n}",
+					"raw": "{\r\n  \"currency\": \"EUR\",\r\n  \"orderer\": \"Tamas\",\r\n  \"order_lines\": [\r\n    {\r\n      \"price_in_cents\": 1300,\r\n      \"drink\": {\r\n        \"name\": \"Black Coffee\",\r\n        \"price_in_cents\": 500\r\n      },\r\n      \"toppings\": []\r\n    },\r\n    {\r\n      \"price_in_cents\": 1500,\r\n      \"drink\": {\r\n        \"name\": \"Mocha\",\r\n        \"price_in_cents\": 1500\r\n      },\r\n      \"toppings\": [\r\n        {\r\n          \"name\": \"Milk\",\r\n          \"price_in_cents\": 200\r\n        }\r\n      ]\r\n    }\r\n  ],\r\n  \"created_at\": \"2023-10-01T12:00:00Z\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -49,7 +49,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"orderer\": \"Tamas\",\r\n    \"order_lines\": [\r\n        {\r\n        \"price_in_cents\": 1300,\r\n        \"coffees\": [\r\n            {\r\n            \"name\": \"Latte\",\r\n            \"price_in_cents\": 500\r\n            }\r\n        ],\r\n        \"toppings\": [\r\n            {\r\n            \"name\": \"Chocolate Syrup\",\r\n            \"price_in_cents\": 500\r\n            },\r\n            {\r\n            \"name\": \"Hazelnut Syrup\",\r\n            \"price_in_cents\": 300\r\n            }\r\n        ]\r\n        },\r\n        {\r\n        \"price_in_cents\": 500,\r\n        \"coffees\": [\r\n            {\r\n            \"name\": \"Latte\",\r\n            \"price_in_cents\": 500\r\n            }\r\n        ],\r\n        \"toppings\": []\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"orderer\": \"Tamas\",\r\n    \"order_lines\": [\r\n        {\r\n        \"price_in_cents\": 1300,\r\n        \"drink\": {\r\n            \"name\": \"Latte\",\r\n            \"price_in_cents\": 500\r\n            }\r\n        ,\r\n        \"toppings\": [\r\n            {\r\n            \"name\": \"Chocolate Syrup\",\r\n            \"price_in_cents\": 500\r\n            },\r\n            {\r\n            \"name\": \"Hazelnut Syrup\",\r\n            \"price_in_cents\": 300\r\n            }\r\n        ]\r\n        },\r\n        {\r\n        \"price_in_cents\": 500,\r\n        \"drink\": {\r\n            \"name\": \"Latte\",\r\n            \"price_in_cents\": 500\r\n            },\r\n        \"toppings\": []\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -224,6 +224,29 @@
 						"admin",
 						"products",
 						"most-popular"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ADMIN  - get order",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/admin/orders/RCS-20250519130713717",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"admin",
+						"orders",
+						"RCS-20250519130713717"
 					]
 				}
 			},
