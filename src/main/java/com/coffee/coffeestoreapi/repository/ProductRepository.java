@@ -13,6 +13,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p ORDER BY p.type ASC")
     List<Product> getAllProducts();
 
-
     Optional<Product> findByProductName(String productName);
 }

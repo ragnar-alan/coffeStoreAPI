@@ -62,18 +62,6 @@ If the port is not 5005 then change it to 5005. The end result should look like 
 ![img.png](img.png)
 Then connect your IDE to port 5005.
 
-
-## API Endpoints
-
-
-
-### Orders API
-
-### Admin API
-
-### Product API
-
-
 ## Configuration
 
 The application uses environment variables for configuration:

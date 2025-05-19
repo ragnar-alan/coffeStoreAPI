@@ -16,6 +16,6 @@ public class SimpleOrderDto {
     private LocalDateTime createdAt;
     private Currency currency;
     private List<Discount> discount;
-    private Double totalPriceInCents;
+    private Integer totalPriceInCents;
     private OrderStatus status;
 }

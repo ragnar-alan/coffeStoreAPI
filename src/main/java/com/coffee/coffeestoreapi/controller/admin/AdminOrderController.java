@@ -26,7 +26,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/admin/orders")
-public class AdminController {
+public class AdminOrderController {
     private final OrderService orderService;
 
 

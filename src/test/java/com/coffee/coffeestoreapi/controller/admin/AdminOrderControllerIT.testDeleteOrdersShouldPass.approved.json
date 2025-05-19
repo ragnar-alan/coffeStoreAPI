@@ -4,25 +4,25 @@
   "orderer": "Judy",
   "status": "CANCELLED",
   "discounts": [],
-  "sub_total_price_in_cents": 1250.0,
-  "total_price_in_cents": 1000.0,
+  "sub_total_price_in_cents": 1250,
+  "total_price_in_cents": 1000,
   "currency": "EUR",
   "order_lines": [
     {
-      "price_in_cents": 1250.0,
+      "price_in_cents": 1250,
       "drink": {
         "name": "Affogato",
-        "price_in_cents": 1000.0
+        "price_in_cents": 1000
       },
       "toppings": [
         {
           "name": "Ice Cream",
-          "price_in_cents": 250.0
+          "price_in_cents": 250
         }
       ]
     }
   ],
   "created_at": "[DateTime_1]",
-  "updated_at": "[Date_1]",
-  "canceled_at": "[Date_1]"
+  "updated_at": "2025-05-19",
+  "canceled_at": "[DateTime_2]"
 }

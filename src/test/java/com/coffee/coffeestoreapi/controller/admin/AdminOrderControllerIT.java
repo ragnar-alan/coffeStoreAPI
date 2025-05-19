@@ -18,7 +18,7 @@ import java.io.IOException;
 
 import static org.approvaltests.JsonApprovals.verifyJson;
 
-public class AdminControllerIT extends BaseIT {
+public class AdminOrderControllerIT extends BaseIT {
     private static final DockerImageName IMAGE_NAME = DockerImageName
             .parse("postgres:16-alpine")
             .asCompatibleSubstituteFor("postgres");
@@ -164,6 +164,6 @@ public class AdminControllerIT extends BaseIT {
                     .statusCode(200)
                     .extract()
                     .asString();
-        verifyJson(result, new Options().withScrubber(Scrubbers.scrubAll(DATE_TIME_SCRUBBER, DATE_SCRUBBER)));
+        verifyJson(result, new Options().withScrubber(DATE_TIME_SCRUBBER));
     }
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class Discount {
     private String name;
-    private Double percentage;
-    private Double amountInCents;
+    private Integer percentage;
+    private Integer amountInCents;
 }

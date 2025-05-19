@@ -29,7 +29,7 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/products")
 @RequiredArgsConstructor
 @RestController
-public class ProductController {
+public class AdminProductController {
     private final ProductService productService;
     private final OrderService orderService;
 
