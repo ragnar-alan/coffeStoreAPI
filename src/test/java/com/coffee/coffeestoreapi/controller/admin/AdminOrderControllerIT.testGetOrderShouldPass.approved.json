@@ -4,20 +4,20 @@
   "orderer": "Alice",
   "status": "PENDING",
   "discounts": [],
-  "sub_total_price_in_cents": 1200.0,
-  "total_price_in_cents": 1000.0,
+  "sub_total_price_in_cents": 1200,
+  "total_price_in_cents": 1000,
   "currency": "EUR",
   "order_lines": [
     {
-      "price_in_cents": 1200.0,
+      "price_in_cents": 1200,
       "drink": {
         "name": "Latte",
-        "price_in_cents": 700.0
+        "price_in_cents": 700
       },
       "toppings": [
         {
           "name": "Chocolate Syrup",
-          "price_in_cents": 500.0
+          "price_in_cents": 500
         }
       ]
     }

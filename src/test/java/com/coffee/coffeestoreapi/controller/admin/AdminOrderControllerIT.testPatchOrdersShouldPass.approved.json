@@ -6,29 +6,29 @@
   "discounts": [
     {
       "name": "25% off for orders over €12",
-      "percentage": 25.0,
-      "amount_in_cents": 450.0
+      "percentage": 25,
+      "amount_in_cents": 450
     }
   ],
-  "sub_total_price_in_cents": 1800.0,
-  "total_price_in_cents": 1350.0,
+  "sub_total_price_in_cents": 1800,
+  "total_price_in_cents": 1350,
   "currency": "EUR",
   "order_lines": [
     {
-      "price_in_cents": 1300.0,
+      "price_in_cents": 1300,
       "toppings": [
         {
           "name": "Chocolate Syrup",
-          "price_in_cents": 500.0
+          "price_in_cents": 500
         },
         {
           "name": "Hazelnut Syrup",
-          "price_in_cents": 300.0
+          "price_in_cents": 300
         }
       ]
     },
     {
-      "price_in_cents": 500.0,
+      "price_in_cents": 500,
       "toppings": []
     }
   ],

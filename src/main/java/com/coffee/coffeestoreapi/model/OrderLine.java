@@ -7,7 +7,7 @@ import java.util.List;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record OrderLine(
-        Double priceInCents,
+        Integer priceInCents,
         Drink drink,
         List<Topping> toppings
 ) {

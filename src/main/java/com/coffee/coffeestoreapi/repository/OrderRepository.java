@@ -19,11 +19,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o ORDER BY o.createdAt ASC")
     List<Order> findAllDescendingCreationOrder();
 
-    /**
-     * Finds the most popular drink across all orders.
-     * 
-     * @return a Map containing the drink name and count
-     */
     @Query(value = 
            "SELECT jsonb_extract_path_text(drink, 'name') as name, COUNT(*) as count " +
            "FROM orders, jsonb_array_elements(order_lines) as order_line, " +
@@ -34,11 +29,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
            "LIMIT 1", nativeQuery = true)
     Map<String, Object> findMostPopularDrink();
 
-    /**
-     * Finds the most popular topping across all orders.
-     * 
-     * @return a Map containing the topping name and count
-     */
     @Query(value = 
            "SELECT jsonb_extract_path_text(topping, 'name') as name, COUNT(*) as count " +
            "FROM orders, jsonb_array_elements(order_lines) as order_line, " +

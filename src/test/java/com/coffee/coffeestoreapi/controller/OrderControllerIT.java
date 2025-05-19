@@ -3,7 +3,6 @@ package com.coffee.coffeestoreapi.controller;
 
 import com.coffee.coffeestoreapi.BaseIT;
 import io.restassured.RestAssured;
-import org.approvaltests.JsonApprovals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -16,18 +15,18 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
 
+import static org.approvaltests.JsonApprovals.verifyJson;
+
 
 public class OrderControllerIT extends BaseIT {
     private static final DockerImageName IMAGE_NAME = DockerImageName
             .parse("postgres:16-alpine")
             .asCompatibleSubstituteFor("postgres");
-
     @Container
-    protected static final PostgreSQLContainer POSTGRES_CONTAINER = new PostgreSQLContainer<>(IMAGE_NAME)
+    static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>(IMAGE_NAME)
             .withDatabaseName("testdb")
             .withUsername("testuser")
             .withPassword("testpass");
-
 
     @LocalServerPort
     private int port;
@@ -74,7 +73,7 @@ public class OrderControllerIT extends BaseIT {
                     .statusCode(400)
                     .extract()
                     .asString();
-        JsonApprovals.verifyJson(result);
+        verifyJson(result);
     }
 
     @Test
@@ -89,7 +88,7 @@ public class OrderControllerIT extends BaseIT {
                     .statusCode(400)
                     .extract()
                     .asString();
-        JsonApprovals.verifyJson(result);
+        verifyJson(result);
     }
 
     @Test
@@ -104,10 +103,9 @@ public class OrderControllerIT extends BaseIT {
                     .statusCode(400)
                     .extract()
                     .asString();
-        JsonApprovals.verifyJson(result);
+        verifyJson(result);
     }
 
-// I was not able to get this test to work, because the validation is not triggered for some reason
     @Test
     void testOrderCreation_shouldFailDueToPriceIsNull() throws IOException {
         var result = RestAssured
@@ -120,6 +118,6 @@ public class OrderControllerIT extends BaseIT {
                     .statusCode(400)
                     .extract()
                     .asString();
-        JsonApprovals.verifyJson(result);
+        verifyJson(result);
     }
 }

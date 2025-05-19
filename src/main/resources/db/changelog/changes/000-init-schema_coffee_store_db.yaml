@@ -37,10 +37,10 @@ databaseChangeLog:
                   type: VARCHAR(255)
               - column:
                   name: total_price_in_cents
-                  type: DOUBLE
+                  type: INTEGER
               - column:
                   name: sub_total_price_in_cents
-                  type: DOUBLE
+                  type: INTEGER
               - column:
                   name: currency
                   type: VARCHAR(255)

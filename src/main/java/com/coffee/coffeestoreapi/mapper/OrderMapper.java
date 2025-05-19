@@ -14,6 +14,7 @@ public interface OrderMapper {
     OrderMapper INSTANCE = Mappers.getMapper(OrderMapper.class);
 
     @Mapping(target = "createdAt", source = "createdAt", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    @Mapping(target = "canceledAt", source = "canceledAt", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     OrderDto orderToOrderDto(Order order);
 
 

@@ -17,11 +17,13 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,9 +52,9 @@ public class Order {
     @Column(columnDefinition = "jsonb")
     private List<Discount> discounts;
 
-    private Double subTotalPriceInCents;
+    private Integer subTotalPriceInCents;
 
-    private Double totalPriceInCents;
+    private Integer totalPriceInCents;
 
     @Enumerated(EnumType.STRING)
     private Currency currency;
@@ -72,6 +74,7 @@ public class Order {
 
     private LocalDate completedAt;
 
+    @SoftDelete
     private Timestamp canceledAt;
 
 }
