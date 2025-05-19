@@ -2,12 +2,14 @@ package com.coffee.coffeestoreapi.service;
 
 import com.coffee.coffeestoreapi.config.settings.DiscountSettings;
 import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.exception.NoDrinkException;
 import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.Currency;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
 import com.coffee.coffeestoreapi.model.OrderStatus;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,9 +33,19 @@ public class OrderProcessor {
      * @return the processed {@link Order} with calculated prices and discounts
      */
     public Order processOrder(OrderRequest orderRequest) {
+        var isThereAnyMissingDrinks = checkOrderLinesForDrinks(orderRequest.orderLines());
+        if (isThereAnyMissingDrinks) {
+            log.error("Order line do not contain drink.");
+            throw new NoDrinkException("Order line do not contain drink.");
+        }
         var order = new Order();
         order.setOrderNumber(generateOrderNumber());
         return populateOrder(orderRequest.orderer(), orderRequest.orderLines(), order);
+    }
+
+    private Boolean checkOrderLinesForDrinks(List<OrderLine> orderLines) {
+        return orderLines.stream()
+                .anyMatch(orderLine -> orderLine.drink() == null);
     }
 
     public Order processChangedOrder(AdminOrderChangeRequest request, Order order) {

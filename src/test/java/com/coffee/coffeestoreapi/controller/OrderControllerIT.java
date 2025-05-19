@@ -63,6 +63,21 @@ public class OrderControllerIT extends BaseIT {
     }
 
     @Test
+    void testOrderCreationShouldFail_dueToMissingDrinkOrderLine() throws IOException {
+        var result = RestAssured
+                .given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(getFileContents("mockRequests/mockCreateOrderRequest_noDrinkOrderLine.json"))
+                .when()
+                    .post("/api/v1/orders")
+                .then()
+                    .statusCode(400)
+                    .extract()
+                    .asString();
+        JsonApprovals.verifyJson(result);
+    }
+
+    @Test
     void testOrderCreation_shouldFailDueToMissingOrderLines() throws IOException {
         var result = RestAssured
                 .given()

@@ -1,5 +1,6 @@
 package com.coffee.coffeestoreapi.config;
 
+import com.coffee.coffeestoreapi.exception.NoDrinkException;
 import com.coffee.coffeestoreapi.exception.OrderNotFoundException;
 import com.coffee.coffeestoreapi.exception.ProductAlreadyExistsException;
 import lombok.extern.slf4j.Slf4j;
@@ -39,11 +40,19 @@ public class GlobalExceptionHandler {
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleAllExceptions(Exception ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(NoDrinkException.class)
+    public ResponseEntity<Map<String, String>> handleNoDrinkException(NoDrinkException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
 }
