@@ -2,6 +2,7 @@ package com.coffee.coffeestoreapi.service;
 
 import com.coffee.coffeestoreapi.config.settings.DiscountSettings;
 import com.coffee.coffeestoreapi.entity.Order;
+import com.coffee.coffeestoreapi.model.AdminOrderChangeRequest;
 import com.coffee.coffeestoreapi.model.Discount;
 import com.coffee.coffeestoreapi.model.OrderLine;
 import com.coffee.coffeestoreapi.model.OrderRequest;
@@ -13,12 +14,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
 import static com.coffee.coffeestoreapi.model.Currency.EUR;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
@@ -38,9 +40,9 @@ class OrderProcessorTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("subtotalTestCases")
     @DisplayName("Should calculate subtotal correctly for different order lines")
-    void calculateSubtotalInCents_ShouldCalculateCorrectly(List<OrderLine> orderLines, double expectedSubtotal) {
+    void calculateSubtotalInCents_ShouldCalculateCorrectly(List<OrderLine> orderLines, int expectedSubtotal) {
         // When
-        double actualSubtotal = orderProcessor.calculateSubtotalInCents(orderLines);
+        int actualSubtotal = orderProcessor.calculateSubtotalInCents(orderLines);
 
         // Then
         assertEquals(expectedSubtotal, actualSubtotal, 0.001, "Subtotal calculation is incorrect");
@@ -49,9 +51,9 @@ class OrderProcessorTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("discountTestCases")
     @DisplayName("Should calculate total discount correctly")
-    void calculateTotalDiscount_ShouldCalculateCorrectly(List<Discount> discounts, double subtotalInCents, double expectedDiscount) {
+    void calculateTotalDiscount_ShouldCalculateCorrectly(List<Discount> discounts, int subtotalInCents, int expectedDiscount) {
         // When
-        double actualDiscount = orderProcessor.calculateTotalDiscount(discounts, subtotalInCents);
+        int actualDiscount = orderProcessor.calculateTotalDiscount(discounts, subtotalInCents);
 
         // Then
         assertEquals(expectedDiscount, actualDiscount, 0.001, "Discount calculation is incorrect");
@@ -60,7 +62,7 @@ class OrderProcessorTest extends BaseTest {
     @ParameterizedTest
     @MethodSource("discountCalculationTestCases")
     @DisplayName("Should calculate applicable discounts correctly")
-    void calculateDiscounts_ShouldCalculateCorrectly(List<OrderLine> orderLines, double subtotalInCents, List<Discount> expectedDiscounts) {
+    void calculateDiscounts_ShouldCalculateCorrectly(List<OrderLine> orderLines, int subtotalInCents, List<Discount> expectedDiscounts) {
         // Given
         when(discountSettings.isEnabled()).thenReturn(true);
         when(discountSettings.isTwentyFivePercent()).thenReturn(true);
@@ -103,7 +105,7 @@ class OrderProcessorTest extends BaseTest {
     @DisplayName("Should process order correctly with different discount settings")
     void processOrder_ShouldProcessCorrectly(OrderRequest orderRequest, boolean discountsEnabled, 
                                             boolean twentyFivePercentEnabled, boolean freeItemAfterThreeEnabled,
-                                            double expectedSubtotal, double expectedTotal, int expectedDiscountCount) {
+                                            int expectedSubtotal, int expectedTotal, int expectedDiscountCount) {
         // Given
         when(discountSettings.isEnabled()).thenReturn(discountsEnabled);
         when(discountSettings.isTwentyFivePercent()).thenReturn(twentyFivePercentEnabled);
@@ -129,18 +131,18 @@ class OrderProcessorTest extends BaseTest {
     void processChangedOrder_ShouldProcessCorrectly() {
         // Given
         OrderRequest originalRequest = createOrderRequest("Original Customer", List.of(
-            new OrderLine(300.0, ESPRESSO, List.of())
+            new OrderLine(300, ESPRESSO, List.of())
         ));
         Order originalOrder = new Order();
         originalOrder.setOrderNumber("RCS-20230101000000000");
         
         String newOrderer = "New Customer";
         List<OrderLine> newOrderLines = List.of(
-            new OrderLine(350.0, LATTE, List.of()),
-            new OrderLine(300.0, CAPPUCCINO, List.of())
+            new OrderLine(350, LATTE, List.of()),
+            new OrderLine(300, CAPPUCCINO, List.of())
         );
         
-        var changeRequest = new com.coffee.coffeestoreapi.model.AdminOrderChangeRequest(
+        var changeRequest = new AdminOrderChangeRequest(
             newOrderer, newOrderLines
         );
         
@@ -156,7 +158,9 @@ class OrderProcessorTest extends BaseTest {
         assertEquals("RCS-20230101000000000", changedOrder.getOrderNumber(), "Order number should remain the same");
         assertEquals(newOrderer, changedOrder.getOrderer(), "Order orderer should be updated");
         assertEquals(newOrderLines, changedOrder.getOrderLines(), "Order lines should be updated");
-        assertEquals(650.0, changedOrder.getSubTotalPriceInCents(), 0.001, "Subtotal price is incorrect");
+        assertEquals(650, changedOrder.getSubTotalPriceInCents(), "Subtotal price is incorrect");
         assertEquals(EUR, changedOrder.getCurrency(), "Currency should be EUR");
     }
+
+
 }

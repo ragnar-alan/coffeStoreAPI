@@ -107,18 +107,18 @@ class OrderMapperTest extends BaseTest {
         order.setOrderNumber("ORD-123");
         order.setOrderer("John Doe");
         order.setStatus(OrderStatus.PENDING);
-        order.setSubTotalPriceInCents(1000.0);
-        order.setTotalPriceInCents(800.0);
+        order.setSubTotalPriceInCents(1000);
+        order.setTotalPriceInCents(800);
         order.setCurrency(Currency.EUR);
 
         List<OrderLine> orderLines = Arrays.asList(
-            new OrderLine(500.0, ESPRESSO, Arrays.asList(MILK, SUGAR)),
-            new OrderLine(500.0, LATTE, Arrays.asList(CINNAMON))
+            new OrderLine(500, ESPRESSO, Arrays.asList(MILK, SUGAR)),
+            new OrderLine(500, LATTE, Arrays.asList(CINNAMON))
         );
         order.setOrderLines(orderLines);
 
         List<Discount> discounts = Arrays.asList(
-            createPercentageDiscount("25% off for orders over €12", 25.0)
+            createPercentageDiscount("25% off for orders over €12", 25)
         );
         order.setDiscounts(discounts);
 

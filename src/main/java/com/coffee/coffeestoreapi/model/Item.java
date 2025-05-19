@@ -8,5 +8,5 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Item {
     private String name;
-    private Double priceInCents;
+    private Integer priceInCents;
 }

@@ -18,13 +18,13 @@ public class OrderDto {
     private String orderer;
     private OrderStatus status;
     private List<Discount> discounts;
-    private Double subTotalPriceInCents;
-    private Double totalPriceInCents;
+    private Integer subTotalPriceInCents;
+    private Integer totalPriceInCents;
     private Currency currency;
     private List<OrderLine> orderLines;
     private LocalDateTime createdAt;
     private LocalDate updatedAt;
     private LocalDate processedAt;
     private LocalDate completedAt;
-    private LocalDate canceledAt;
+    private LocalDateTime canceledAt;
 }

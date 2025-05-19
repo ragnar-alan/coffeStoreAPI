@@ -1,8 +1,4 @@
 spring:
-  logging:
-    level:
-      root: TRACE
-      org.springframework: TRACE
   application:
     name: coffee-order-api-test
   datasource:

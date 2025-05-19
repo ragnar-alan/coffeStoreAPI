@@ -5,15 +5,18 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
+import java.io.IOException;
+
 import static org.approvaltests.JsonApprovals.verifyJson;
 
-public class ProductControllerIT extends BaseIT {
+public class AdminProductControllerIT extends BaseIT {
     private static final DockerImageName IMAGE_NAME = DockerImageName
             .parse("postgres:16-alpine")
             .asCompatibleSubstituteFor("postgres");
@@ -80,11 +83,9 @@ public class ProductControllerIT extends BaseIT {
                     .asString();
     }
 
-// I wasn't able to get this test to pass. Somewhere I messed up the configuration maybe, because the other tests are fine.
-// I will leave it commented out for now, but I will try to fix it later.
-    /*@Test
+    @Test
     void testCreateProductShouldPass() throws IOException {
-        var result = RestAssured
+        RestAssured
                 .given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(getFileContents("mockRequests/mockCreateProductRequest.json"))
@@ -94,8 +95,7 @@ public class ProductControllerIT extends BaseIT {
                     .statusCode(201)
                     .extract()
                     .asString();
-        verifyJson(result);
-    }*/
+    }
 
     @Test
     void testGetMostPopularItemsShouldPass() {

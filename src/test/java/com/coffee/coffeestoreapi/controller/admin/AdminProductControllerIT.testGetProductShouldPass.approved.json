@@ -1,0 +1,7 @@
+{
+  "id": 1,
+  "product_name": "Black Coffee",
+  "price_in_cents": 400,
+  "type": "DRINK",
+  "is_favorite": true
+}

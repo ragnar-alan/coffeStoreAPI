@@ -10,15 +10,16 @@ import com.coffee.coffeestoreapi.model.OrderStatus;
 import com.coffee.coffeestoreapi.model.PopularItemsDto;
 import com.coffee.coffeestoreapi.model.SimpleOrderDto;
 import com.coffee.coffeestoreapi.repository.OrderRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.net.URI;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class OrderService {
         return orderEntity
                 .map(order -> ResponseEntity.ok(orderMapper.orderToOrderDto(order)))
                 .orElseGet(() -> {
-                    log.error("Order not found when getting the order with the given order number: {}", orderNumber);
+                    log.warn("Order not found when getting the order with the given order number: {}", orderNumber);
                     return ResponseEntity.notFound().build();
                 });
     }
@@ -57,7 +58,7 @@ public class OrderService {
      */
     public ResponseEntity<List<SimpleOrderDto>> getAllOrders() {
         var orderEntities = orderRepository.findAllDescendingCreationOrder();
-        if (CollectionUtils.isEmpty(orderEntities)) {
+        if (orderEntities.isEmpty()) {
             return ResponseEntity.ok(List.of());
         }
         return ResponseEntity.ok(mapOrdersToSimpleOrderDtos(orderEntities));
@@ -100,7 +101,7 @@ public class OrderService {
         var orderOpt = orderRepository.findByOrderNumber(orderNumber);
         if (orderOpt.isPresent()) {
             var order = orderOpt.get();
-            order.setCanceledAt(new Timestamp(System.currentTimeMillis()));
+            order.setCanceledAt(Timestamp.valueOf(LocalDateTime.now().withNano(0)));
             order.setStatus(OrderStatus.CANCELLED);
             orderRepository.save(order);
             return ResponseEntity.noContent().build();
